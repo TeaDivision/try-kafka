@@ -1,6 +1,7 @@
 package com.example.producer.controller;
 
 import com.example.producer.service.KafkaService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ public class KafkaController {
         this.kafkaService = kafkaService;
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping
     public String publishMessage(String msg) {
         try {
