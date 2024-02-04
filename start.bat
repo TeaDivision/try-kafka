@@ -1,1 +1,1 @@
-docker-compose up --build --pull always -d
+docker-compose up --build always -d
