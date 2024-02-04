@@ -1,6 +1,8 @@
 package com.example.producer.controller;
 
+import com.example.producer.model.Message;
 import com.example.producer.service.KafkaService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,13 +19,13 @@ public class KafkaController {
 
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping
-    public String publishMessage(String msg) {
+    public ResponseEntity<String> publishMessage(String msg) {
         try {
-            kafkaService.publishMessage("test_topic", msg);
+            kafkaService.publishMessage("test_topic", new Message<>(msg));
         }
         catch (Exception e) {
-            return "Ошибка при отправке сообщения:\n " + e.getMessage();
+            return ResponseEntity.internalServerError().body("Ошибка при отправке сообщения:\n " + e.getMessage());
         }
-        return "Сообщение отправлено";
+        return ResponseEntity.ok("Сообщение отправлено");
     }
 }

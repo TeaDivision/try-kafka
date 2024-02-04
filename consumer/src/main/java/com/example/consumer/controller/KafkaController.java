@@ -21,7 +21,7 @@ public class KafkaController {
 
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("get-all")
-    public List<Message> publishMessage() {
+    public List<Message<?>> publishMessage() {
        return kafkaService.getMessages();
     }
 }
