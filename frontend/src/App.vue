@@ -1,12 +1,15 @@
 <script>
 import axios from 'axios'
+import {v4 as uuidv4} from 'uuid'
 export default {
     data() {
         return {
             message: '',
             error: '',
             sendingResult: '',
-            readingResult: []
+            readingResult: [],
+            dosAttackIsRun: false,
+            dosAttackTimer: undefined
         }
     },
     methods: {
@@ -27,6 +30,18 @@ export default {
                 .then(res => {
                     this.readingResult = res.data
                 })
+        },
+
+        startDosAttack() {
+            this.dosAttackIsRun = true;
+            this.dosAttackTimer = setInterval(() => {
+                axios.get(`http://localhost:8081?msg=${uuidv4()}`)
+            }, 10);
+        },
+
+        stopDosAttack() {
+            this.dosAttackIsRun = false;
+            clearInterval(this.dosAttackTimer)
         }
     }
 }
@@ -39,6 +54,10 @@ export default {
       <input type="text" v-model="message" placeholder="Введите сообщение">
       <button v-if="message !== ''" @click="sendMessage()">Отправить</button>
       <button disabled v-else @click="sendMessage()">Отправить</button>
+
+      <button class="dos-stop" v-if="this.dosAttackIsRun" @click="stopDosAttack()">Остановить DoS-атаку</button>
+      <button class="dos" v-else @click="startDosAttack()">DoS-атака</button>
+
       <p class="error" v-if="error !== ''">{{ error }}</p>
       <p class="info" v-if="sendingResult !== ''">{{ sendingResult }}</p>
   </div>
@@ -46,18 +65,24 @@ export default {
   <div class="wrapper">
       <h1>Список сообщений</h1>
       <button @click="readMessage()">Обновить</button>
-      <table>
-          <tr>
-              <td>Дата и время создания соосбшения</td>
-              <td>Дата и время обработки</td>
-              <td>Сообщение</td>
-          </tr>
-          <tr v-for="messageObj in this.readingResult">
-              <td>{{new Date(messageObj.createdAt).toLocaleString()}}</td>
-              <td>{{new Date(messageObj.readAt).toLocaleString()}}</td>
-              <td>{{messageObj.data}}</td>
-          </tr>
-      </table>
+      <div class="tableFixHead">
+          <table>
+              <thead>
+                  <tr>
+                      <th>Дата и время создания соосбшения</th>
+                      <th>Дата и время обработки</th>
+                      <th>Сообщение</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr v-for="messageObj in this.readingResult">
+                      <td>{{new Date(messageObj.createdAt).toLocaleString()}}</td>
+                      <td>{{new Date(messageObj.readAt).toLocaleString()}}</td>
+                      <td>{{messageObj.data}}</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
   </div>
 </template>
 
@@ -102,6 +127,18 @@ export default {
       transition: transform 500ms ease;
   }
 
+  .wrapper button.dos {
+      background: #ff0000;
+      color: #000000;
+      border: 2px solid #d01818;
+  }
+
+  .wrapper button.dos-stop {
+      background: #55d018;
+      color: #000000;
+      border: 2px solid #3ab429;
+  }
+
   .wrapper button:disabled {
       background: #5e522f;
   }
@@ -119,6 +156,8 @@ export default {
   }
 
   .wrapper table {
+      margin-left: auto;
+      margin-right: auto;
       text-align: left;
       border-collapse: separate;
       border-spacing: 5px;
@@ -132,5 +171,22 @@ export default {
   .wrapper td {
       background: #853596;
       padding: 10px;
+  }
+
+  /*.wrapper thead, tbody { display: block; }*/
+
+  .tableFixHead {
+      overflow-y: auto; /* make the table scrollable if height is more than 200 px  */
+      height: 200px; /* gives an initial height of 200px to the table */
+  }
+
+  .tableFixHead thead th {
+      background: #853596;
+      position: sticky; /* make the table heads sticky */
+      top: 0px; /* table head will be placed from the top of the table and sticks to it */
+  }
+  table {
+      border-collapse: collapse; /* make the table borders collapse to each other */
+      width: 100%;
   }
 </style>
