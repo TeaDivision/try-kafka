@@ -45,16 +45,17 @@ export default {
 
   <div class="wrapper">
       <h1>Список сообщений</h1>
-      <p>Получить список сообщений</p>
       <button @click="readMessage()">Обновить</button>
       <table>
           <tr>
+              <td>Дата и время создания соосбшения</td>
               <td>Дата и время обработки</td>
               <td>Сообщение</td>
           </tr>
           <tr v-for="messageObj in this.readingResult">
+              <td>{{new Date(messageObj.createdAt).toLocaleString()}}</td>
               <td>{{new Date(messageObj.readAt).toLocaleString()}}</td>
-              <td>{{messageObj.message}}</td>
+              <td>{{messageObj.data}}</td>
           </tr>
       </table>
   </div>
@@ -88,7 +89,7 @@ export default {
       outline: none;
   }
   .wrapper input:focus {
-      border-bottom-color: #6e2d7d;;
+      border-bottom-color: #6e2d7d;
   }
   .wrapper button {
       background: #e3bc4b;
@@ -115,5 +116,21 @@ export default {
 
   .info {
       color: #00d000;
+  }
+
+  .wrapper table {
+      text-align: left;
+      border-collapse: separate;
+      border-spacing: 5px;
+      background: #792485;
+      color: #f1f1f1;
+      margin-top: 30px;
+  }
+  .wrapper th {
+      padding: 5px;
+  }
+  .wrapper td {
+      background: #853596;
+      padding: 10px;
   }
 </style>
