@@ -28,7 +28,6 @@ services:
     ports:
       - 8082:8082
     environment:
-#      SPRING_KAFKA_CONSUMER_VALUE-DESERIALIZER: org.springframework.kafka.support.serializer.JsonDeserializer
       SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka-1:9092,kafka-2:9092
       SPRING_KAFKA_CONSUMER_GROUP-ID: 1
     depends_on:
